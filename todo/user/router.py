@@ -13,3 +13,8 @@ def get_service(session: AsyncSession = Depends(db_dep)) -> TodoService:
 async def create_todo(body: TodoCreate, service: TodoService = Depends(get_service)):
     item = await service.create(text=body.text)
     return item
+
+@router.get("/todo", response_model=List[TodoOut])
+async def read_todo(service: TodoService = Depends(get_service)):
+    items = await service.list()
+    return items

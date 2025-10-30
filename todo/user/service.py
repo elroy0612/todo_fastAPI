@@ -17,3 +17,7 @@ class TodoService:
         except IntegrityError:
             await self.session.rollback()
             raise
+
+    async def list(self) -> List[TodoOut]:
+        rows = await self.repo.list_desc()
+        return [TodoOut.model_validate(r) for r in rows]

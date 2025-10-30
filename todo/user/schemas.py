@@ -10,3 +10,4 @@ class TodoOut(BaseModel):
     done: bool
     createdAt: datetime
     model_config = ConfigDict(from_attributes=True)
+    
