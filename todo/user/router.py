@@ -18,3 +18,9 @@ async def create_todo(body: TodoCreate, service: TodoService = Depends(get_servi
 async def read_todo(service: TodoService = Depends(get_service)):
     items = await service.list()
     return items
+
+@router.delete("/todo", response_model=DeleteResult, status_code=200) 
+async def delete_todo(body: TodoDel, service: TodoService = Depends(get_service)):
+    deleted = await service.delete(body.ids)
+    return {"deleted": deleted, "count": len(deleted)} # client로 보낼 json 응답
+    # response_model을 이용해서 dict를 반환해도 FastAPI가 DeleteResult로 검증/직렬화 후 응답 보냄

@@ -21,3 +21,13 @@ class TodoService:
     async def list(self) -> List[TodoOut]:
         rows = await self.repo.list_desc()
         return [TodoOut.model_validate(r) for r in rows]
+    
+    async def delete(self, ids: list[int]) -> list[int]:
+        uniq = list(dict.fromkeys(ids)) # 중복 제거
+        try:
+            deleted_ids = await self.repo.delete(uniq) # 트랜잭션 안에서 삭제
+            await self.session.commit() # db에 반영(확정) = 다른 세션에서도 반영됨
+            return deleted_ids # router로 
+        except:
+            await self.session.rollback() # 전부 취소(원상복구)
+            raise
